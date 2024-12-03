@@ -1,0 +1,278 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Press Start 2P', sans-serif;
+    background-color: black;
+    color: yellow;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 800px;
+    margin-bottom: 15px;
+  }
+  
+  .title {
+    font-size: 32px;
+    text-shadow: 0 0 20px #feca57, 0 0 30px #feca57, 0 0 40px #feca57;
+    animation: flicker 1.5s infinite;
+    padding: 10px;
+    border: 2px solid yellow;
+    border-radius: 10px;
+    box-shadow: 0 0 10px yellow;
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    display: inline-block;
+    z-index: 10;
+  }
+  
+  @keyframes flicker {
+    0%, 100% {
+      text-shadow: 0 0 20px #feca57, 0 0 30px #feca57, 0 0 40px #feca57;
+    }
+    50% {
+      text-shadow: 0 0 10px #feca57, 0 0 20px #feca57, 0 0 30px #feca57;
+    }
+  }
+  
+  #mute {
+    position: absolute;
+    top: 10px;
+    left: 50px;
+    background-color: black;
+    color: yellow;
+    border: 2px solid yellow;
+    font-size: 14px;
+    padding: 4px 20px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+  }
+  
+  #restart-button {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    background-color: black;
+    color: yellow;
+    border: 2px solid yellow;
+    font-size: 14px;
+    padding: 4px 20px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+  }
+  
+  button:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 15px yellow;
+    color: #feca57;
+  }
+  
+  #game-container {
+    text-align: center;
+    width: 650px;
+    height: 450px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    border: 5px solid #feca57;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px #feca57;
+  }
+  
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(20, 25px);
+    grid-gap: 0;
+    justify-content: center;
+    align-content: center;
+    background-color: black;
+    border: 4px solid blue;
+    position: relative;
+    box-shadow: 0 0 15px blue;
+  }
+  
+  .wall {
+    background-color: blue;
+    border-radius: 8px;
+    box-shadow: inset 0 0 10px #1e90ff;
+  }
+  
+  .path {
+    background-color: black;
+    position: relative;
+  }
+  
+  .dot {
+    width: 8px;
+    height: 8px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 5px white;
+  }
+  
+  .special-dot {
+    width: 12px;
+    height: 12px;
+    background-color: rgb(240, 198, 105);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px rgb(240, 198, 105);
+    animation: pulse 1.2s infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% {
+      transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.2);
+    }
+  }
+  
+  #pacman {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-image: url('https://i.ibb.co/NWs7K08/Original-Pac-Man.png');
+    background-size: cover;
+    z-index: 2;
+    transition: transform 0.08s linear, top 0.08s linear, left 0.08s linear;
+    filter: drop-shadow(0 0 5px yellow);
+  }
+  
+  .ghost {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-size: cover;
+    z-index: 2;
+    filter: drop-shadow(0 0 5px red);
+  }
+  
+  .score, .lives {
+    font-size: 16px;
+    position: absolute;
+    color: yellow;
+    text-shadow: 0 0 5px yellow;
+  }
+  
+  .score {
+    bottom: 10px;
+    right: 20px;
+  }
+  
+  .lives {
+    bottom: 10px;
+    left: 20px;
+  }
+  
+  .title.game-over {
+    color: red;
+    text-shadow: 0 0 20px red, 0 0 30px red, 0 0 40px red;
+    animation: flicker-red 1.5s infinite;
+  }
+  
+  @keyframes flicker-red {
+    0%, 100% {
+      text-shadow: 0 0 20px red, 0 0 30px red, 0 0 40px red;
+    }
+    50% {
+      text-shadow: 0 0 10px red, 0 0 20px red, 0 0 30px red;
+    }
+  }
+  
+  
+  #instructions-button {
+    background-color: black;
+    color: yellow;
+    position: absolute;
+    top: 9px;
+    left: 10px;
+    font-family: 'Cursive', sans-serif;
+    font-size: 24px;
+    border: 2px solid yellow;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  #instructions-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px yellow;
+  }
+  
+  #instructions-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: yellow;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Press Start 2P', sans-serif;
+    font-size: 16px;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+    z-index: 1000;
+    display: none;
+  }
+  
+  #instructions-content {
+    max-width: 600px;
+    padding: 20px;
+    border: 2px solid yellow;
+    border-radius: 10px;
+    background-color: black;
+    box-shadow: 0 0 10px yellow;
+  }
+  
+  #close-instructions {
+    margin-top: 15px;
+    padding: 10px 20px;
+    border: 2px solid yellow;
+    background-color: black;
+    color: yellow;
+    cursor: pointer;
+    font-size: 14px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+  }
+  
+  #close-instructions:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px yellow;
+  }
+  
