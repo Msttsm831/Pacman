@@ -300,6 +300,23 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+function checkWinCondition() {
+    if (score === 1470) { 
+      gameRunning = false; 
+  
+      
+      const title = document.querySelector('.title');
+      title.textContent = 'YOU WIN!';
+      title.classList.add('game-over'); //
+  
+      // Stop background music
+      backgroundMusic.pause();
+
+      }
+    }
+  
+  
+
 updatePacmanPosition();
 updateLivesDisplay();
 
