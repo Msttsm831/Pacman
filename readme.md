@@ -11,7 +11,7 @@ A modern recreation of the classic Pac-Man arcade game, with simple graphics and
 
 ### Play the Game
 
-[Deployed Game Link](https://your-game-link.com/)
+[Deployed Game Link](https://msttsm831.github.io/Pacman/)
 
 ### How to Play
 
