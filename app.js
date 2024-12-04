@@ -1,21 +1,21 @@
 const grid = document.querySelector('.grid');
 
-// Background Music
+const deathSound = new Audio('./Sounds/Deathsound.wav');
+const winSound = new Audio('./Sounds/Win.wav');
 const backgroundMusic = new Audio('./Sounds/Gamesound.wav');
 backgroundMusic.loop = true;
 backgroundMusic.volume = 0.5;
 let musicStarted = false;
 
+// Game music
 function startBackgroundMusic() {
   if (!musicStarted) {
-    backgroundMusic.play().catch((error) => {
-      console.error('Music playback failed:', error);
-    });
+    backgroundMusic.play().catch((error) => console.error('Music playback failed:', error));
     musicStarted = true;
   }
 }
 
-// Maze 
+// Maze Layout
 const mazeLayout = [
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
   1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1,
@@ -66,7 +66,6 @@ function createMaze() {
 
 createMaze();
 
-// Pac-Man Initialization
 const pacman = document.createElement('div');
 pacman.id = 'pacman';
 grid.appendChild(pacman);
@@ -77,6 +76,7 @@ const gridSize = 25;
 let direction = null;
 let isMouthOpen = true;
 let lives = 3;
+let score = 0;
 
 function updatePacmanPosition() {
   pacman.style.left = `${pacmanX * gridSize}px`;
@@ -89,8 +89,6 @@ function togglePacmanMouth() {
     : 'url("https://i.ibb.co/NWs7K08/Original-Pac-Man.png")';
   isMouthOpen = !isMouthOpen;
 }
-
-let score = 0;
 
 function updateScore() {
   const scoreDisplay = document.querySelector('.score');
@@ -107,33 +105,26 @@ function updateLivesDisplay() {
 }
 
 function resetPacmanAfterCollision() {
-    if (!gameRunning) return; 
-    gameRunning = false;
+  if (!gameRunning) return;
 
-    backgroundMusic.pause();
+  gameRunning = false;
 
-    deathSound.play().catch((error) => {
-      console.error('Failed to play death sound:', error);
-    });
+  backgroundMusic.pause();
+  deathSound.play().catch((error) => console.error('Failed to play death sound:', error));
+  
+  pacman.style.visibility = 'hidden';
 
-    pacman.style.visibility = 'hidden';
-  
-    setTimeout(() => {
-      pacmanX = 1; 
-      pacmanY = 1;
-      updatePacmanPosition();
-      pacman.style.visibility = 'visible';
-  
-      backgroundMusic.play().catch((error) => {
-        console.error('Failed to resume background music:', error);
-      });
-  
-      gameRunning = true;
-    }, 3000); 
-  }
-  
-  
-const deathSound = new Audio('./Sounds/Deathsound.wav');
+  setTimeout(() => {
+    pacmanX = 1;
+    pacmanY = 1;
+    updatePacmanPosition();
+    pacman.style.visibility = 'visible';
+
+    backgroundMusic.play().catch((error) => console.error('Failed to resume background music:', error));
+
+    gameRunning = true;
+  }, 3000);
+}
 
 function checkGameOver() {
   if (lives <= 0) {
@@ -144,16 +135,33 @@ function checkGameOver() {
     title.classList.add('game-over');
 
     backgroundMusic.pause();
-
-    deathSound.play().catch((error) => {
-      console.error('Failed to play death sound:', error);
-    });
-
+    deathSound.play().catch((error) => console.error('Failed to play death sound:', error));
+    
     pacman.style.visibility = 'hidden';
   }
 }
 
-// Collision 
+function checkWinCondition() {
+  if (score >= 1470) {
+    gameRunning = false;
+
+    const title = document.querySelector('.title');
+    title.textContent = 'YOU WIN!';
+    title.classList.add('game-over');
+
+    backgroundMusic.pause();
+
+    winSound.play().catch((error) => console.error('Failed to play win sound:', error));
+
+    pacman.style.visibility = 'hidden';
+    ghosts.forEach((ghost) => {
+      const ghostEl = document.getElementById(ghost.id);
+      ghostEl.style.visibility = 'hidden';
+    });
+  }
+}
+
+// Collision
 function checkCollisionWithGhosts() {
   const pacmanRect = pacman.getBoundingClientRect();
 
@@ -199,6 +207,7 @@ function movePacman() {
       dot.remove();
       score += 10;
       updateScore();
+      checkWinCondition();
     }
 
     const specialDot = document.querySelector(`.special-dot[data-index='${index}']`);
@@ -206,6 +215,7 @@ function movePacman() {
       specialDot.remove();
       score += 50;
       updateScore();
+      checkWinCondition();
     }
   }
 
@@ -258,10 +268,9 @@ ghosts.forEach((ghost) => {
     }
 
     checkCollisionWithGhosts();
-  }, 500);
+  }, 300);
 });
 
-// Restart Button 
 document.getElementById('restart-button').addEventListener('click', () => {
   window.location.reload();
 });
@@ -271,51 +280,44 @@ const muteButton = document.getElementById('mute');
 let isMuted = false;
 
 function toggleMute() {
-    isMuted = !isMuted;
-    backgroundMusic.muted = isMuted;
-    deathSound.muted = isMuted;
-    muteButton.textContent = isMuted ? 'Unmute' : 'Mute';
-  }
-  
+  isMuted = !isMuted;
+  backgroundMusic.muted = isMuted;
+  deathSound.muted = isMuted;
+  winSound.muted = isMuted;
+
+  muteButton.textContent = isMuted ? 'Unmute' : 'Mute';
+}
 
 muteButton.addEventListener('click', toggleMute);
 
 document.addEventListener('keydown', (e) => {
-  startBackgroundMusic();
-  if (e.key === 'ArrowRight') {
-    direction = 'right';
-    pacman.style.transform = 'rotate(180deg)';
-  }
-  if (e.key === 'ArrowLeft') {
-    direction = 'left';
-    pacman.style.transform = 'rotate(0deg)';
-  }
-  if (e.key === 'ArrowUp') {
-    direction = 'up';
-    pacman.style.transform = 'rotate(90deg)';
-  }
-  if (e.key === 'ArrowDown') {
-    direction = 'down';
-    pacman.style.transform = 'rotate(-90deg)';
-  }
-});
-
-function checkWinCondition() {
-    if (score === 1470) { 
-      gameRunning = false; 
-  
-      
-      const title = document.querySelector('.title');
-      title.textContent = 'YOU WIN!';
-      title.classList.add('game-over'); //
-  
-      // Stop background music
-      backgroundMusic.pause();
-
-      }
+    startBackgroundMusic();
+    if (e.key === 'ArrowRight') {
+      direction = 'right';
+      pacman.style.transform = 'rotate(180deg)';
     }
-  
-  
+    if (e.key === 'ArrowLeft') {
+      direction = 'left';
+      pacman.style.transform = 'rotate(0deg)';
+    }
+    if (e.key === 'ArrowUp') {
+      direction = 'up';
+      pacman.style.transform = 'rotate(90deg)';
+    }
+    if (e.key === 'ArrowDown') {
+      direction = 'down';
+      pacman.style.transform = 'rotate(-90deg)';
+    }
+  });
+
+// Key Controls
+document.addEventListener('keydown', (e) => {
+  startBackgroundMusic();
+  if (e.key === 'ArrowRight') direction = 'right';
+  if (e.key === 'ArrowLeft') direction = 'left';
+  if (e.key === 'ArrowUp') direction = 'up';
+  if (e.key === 'ArrowDown') direction = 'down';
+});
 
 updatePacmanPosition();
 updateLivesDisplay();
@@ -326,13 +328,13 @@ setInterval(() => {
 
 setInterval(togglePacmanMouth, 120);
 
-
+// Instructions Overlay
 const instructionsOverlay = document.createElement('div');
 instructionsOverlay.id = 'instructions-overlay';
 instructionsOverlay.innerHTML = `
   <div id="instructions-content">
     <p><strong>Game Instructions:</strong></p>
-    <ul style="text-align: left; margin: 10px 0;">
+    <ul>
       <li>Use Arrow Keys to move Pac-Man.</li>
       <li>Collect all dots to win the game.</li>
       <li>Avoid the ghosts—colliding with them reduces lives.</li>
@@ -343,7 +345,6 @@ instructionsOverlay.innerHTML = `
     <button id="close-instructions">Close</button>
   </div>
 `;
-
 document.body.appendChild(instructionsOverlay);
 
 const instructionsButton = document.getElementById('instructions-button');

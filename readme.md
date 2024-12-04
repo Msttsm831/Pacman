@@ -35,6 +35,8 @@ A modern recreation of the classic Pac-Man arcade game, with simple graphics and
 -   [Pacman open-mouth](https://images.app.goo.gl/KYQAsw9drpa1v2GXA)
 -   [Pacman closed-mouth](https://images.app.goo.gl/nSUUZoCpV85dDkVPA)
 -   [Sounds](https://youtu.be/SPjEhbRFTUk?si=TT_bORIJTwskGnWk)
+-   [Winning sound](https://mixkit.co/free-sound-effects/win/)
+-   [Font](https://mixkit.co/free-sound-effects/game-over/)
 ----------
 
 ## Technologies Used
